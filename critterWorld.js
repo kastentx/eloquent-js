@@ -1,3 +1,4 @@
+// Constants
 var plan =
   ['############################',
    '#      #    #      o      ##',
@@ -14,8 +15,25 @@ var plan =
 
 var directionNames = 'n ne e se s sw w nw'.split(' ');
 
+// Helper Functions
 function randomElement(array) {
   return array[Math.floor(Math.random() * array.length)];
+}
+
+function elementFromChar(legend, ch) {
+  if (ch == ' ') {
+    return null;
+  }
+  var element = new legend[ch]();
+  element.originChar = ch;
+  return element;
+}
+function charFromElement(element) {
+  if (element == null) {
+    return ' ';
+  } else {
+    return element.originChar
+  }
 }
 
 // Vector
@@ -56,8 +74,51 @@ Grid.prototype.set = function(vector, value) {
   this.space[vector.x + vector.y * this.width] = value; 
 }
 
+// Bouncing Critter
+function BouncingCritter() {
+  this.direction = randomElement(directionNames);
+}
+BouncingCritter.prototype.act = function(view) {
+  if (view.look(this.direction) != ' ') {
+    this.direction = view.find(' ') || 's';
+  }
+  return {type: 'move', direction: this.direction}
+}
+
+// World Object
+function World(map, legend) {
+  var grid = new Grid(map[0].length, map.length);
+  this.grid = grid;
+  this.legend = legend;
+
+  map.forEach(function(line, y) {
+    for(var x = 0; x < line.length; x++) {
+      grid.set(new Vector(x, y),
+               elementFromChar(legend, line[x]));
+    }
+  });
+}
+World.prototype.toString = function() {
+  var output = '';
+  for (var y = 0; y < this.grid.height; y++) {
+    for (var x = 0; x < this.grid.width; x++) {
+      var element = this.grid.get(new Vector(x, y));
+      output += charFromElement(element);
+    }
+    output += '\n';
+  }
+  return output;
+}
+
+// Wall
+function Wall() {}
+
 // TEST CODE TO BE RUN
-var myGrid = new Grid(2,2);
-myGrid.set(new Vector(0,1),'X');
-console.log(myGrid.get(new Vector(0,0)));
-console.log(myGrid.get(new Vector(0,1)));
+var world = new World(plan, 
+  {
+    '#': Wall,
+    'o': BouncingCritter 
+  }
+);
+
+console.log(world.toString());
