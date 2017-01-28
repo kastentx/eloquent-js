@@ -1,0 +1,13 @@
+<p style="border: 3px solid red">
+  I'm boxed in, yo!
+</p>
+
+<script type="text/javascript">
+  var para = document.getElementsByTagName('p')[0]
+  console.log("Offset height: " + para.offsetHeight)
+  console.log("Client height: " + para.clientHeight)
+  var rect = para.getBoundingClientRect()
+  for (prop in rect) {
+    console.log(prop + ": " + rect[prop])
+  }
+</script>
