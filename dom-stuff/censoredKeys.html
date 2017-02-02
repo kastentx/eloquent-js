@@ -1,0 +1,20 @@
+<style>
+  body {
+    text-align: center;
+  }
+</style>
+
+<h1>Censored Input</h1>
+<input type=text />
+<p>Try typing something in the box. Then try typing something using the letters
+Q, W, or X.</p>
+<script>
+  var inputText = document.querySelector('input')
+  inputText.addEventListener('keypress', function(e) {
+    var blockedInput = /[qwx]/i
+    if (blockedInput.test(String.fromCharCode(e.charCode)))
+      e.preventDefault()
+
+    console.log(String.fromCharCode(e.charCode))
+  })
+</script>
