@@ -1,0 +1,39 @@
+<!doctype html>
+
+<div id="wrapper">
+  <div data-tabname='one'>Tab One</div>
+  <div data-tabname='two'>Tab Two</div>
+  <div data-tabname='three'>Tab Three</div>
+</div>
+
+<script type="text/javascript">
+  function asTabs(node) {
+    var tabs = [];
+    for (var i = 0; i < node.childNodes.length; i++) {
+      var child = node.childNodes[i];
+      if (child.nodeType == document.ELEMENT_NODE)
+        tabs.push(child);
+    }
+
+    var tabList = document.createElement('div');
+    tabs.forEach(function(tab, i) {
+      var button = document.createElement('button');
+      button.textContent = tab.getAttribute('data-tabname');
+      button.addEventListener('click', function() { selectTab(i); });
+      tabList.appendChild(button);
+    });
+    node.insertBefore(tabList, node.firstChild);
+
+    function selectTab(n) {
+      tabs.forEach(function(tab, i) {
+        tab.style.display = (i == n) ? '' : 'none';
+      })
+      for (var i = 0; i < tabList.childNodes.length; i++) {
+        tabList.childNodes[i].style.background = (i == n) ? 'violet' : '';
+      }
+    }
+    selectTab(0);
+  }
+
+  asTabs(document.querySelector('#wrapper'));
+</script>
